@@ -1,0 +1,28 @@
+<!Doctype html>
+<head>
+	<script src="../../source/scrollWidth.js"></script>
+	<style>
+		textarea { width: 20px; }
+	</style>
+	<script>
+		document.addEventListener('DOMContentLoaded',function(){
+			var startTime = new Date().getTime();
+			var duration = document.getElementById("duration");
+			
+			var input = document.querySelector("textarea");
+			var result = document.querySelector("span");
+			var sw = polyScrollWidth.getScrollWidth(input);
+			result.textContent = sw;
+			
+			var durationTime = new Date().getTime() - startTime;
+			duration.textContent = "Duration: " + durationTime + "ms";
+		});
+	</script>
+</head>
+<body>
+	<p>This one should return the result of the text value but in a wrapped container, anywhere from 8 - 14 is accepted</p>
+	<textarea>This is some text that I have put into a textarea</textarea>
+	<p>Scroll width <span></span></p>
+	<p id="duration"></p>
+</body>
+</html>

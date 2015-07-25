@@ -1,0 +1,28 @@
+<!Doctype html>
+<head>
+	<script src="../../source/scrollWidth.js"></script>
+	<style>
+		input {width: 0;}
+	</style>
+	<script>
+		document.addEventListener('DOMContentLoaded',function(){
+			var startTime = new Date().getTime();
+			var duration = document.getElementById("duration");
+			
+			var input = document.querySelector("input");
+			var result = document.querySelector("span");			
+			var sw = polyScrollWidth.getScrollWidth(input);
+			result.textContent = sw;
+			
+			var durationTime = new Date().getTime() - startTime;
+			duration.textContent = "Duration: " + durationTime + "ms";
+		});
+	</script>
+</head>
+<body>
+	<p>This one should reply with the width of the value of "text" which is anywhere from 19 - 23</p>
+	<input value="text">
+	<p>Scroll width <span></span></p>
+	<p id="duration"></p>
+</body>
+</html>

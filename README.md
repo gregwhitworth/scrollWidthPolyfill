@@ -1,6 +1,3 @@
-# scrollWidthPolyfill
-Polyfill for scroll width
-
 Overview
 ==================
 This was created purely for polyfilling scrollWidth() for inputs, no other types of elements. On most sites the perf hit (which is about an additional 6ms per input) should be fine and will hopefully apply pressure to the MS Edge team to fix this bug but allow you to utilize Lea Verou's [Stretchy Library](http://leaverou.github.io/stretchy/)

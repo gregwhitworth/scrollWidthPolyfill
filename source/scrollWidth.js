@@ -1,94 +1,203 @@
-// This will determine if you need to polyfill for an interopable scroll width
+// Scroll Width Polyfill version 1
+// Github: https://github.com/gregwhitworth/scrollWidthPolyfill
+// License: MIT License (http://opensource.org/licenses/MIT)
 var polyScrollWidth = (function (document, window) {
-    var startTime = new Date().getTime();
+       
     var polyScrollWidth = window.polyScrollWidth || {
-      version: 0.1,
-      getScrollWidth: getScrollWidth,
-      getPadding: getPadding,
-      duration: 0
+        "needsPoly": false,
+        "version": 1
     };
-  
+    
+    init();
+    
+    // Init
+    // ---------------------------------------------
+    // This initializes the polyfill and checks to see
+    // if the scrollWidth method is producing a reasonable
+    // result, if so then no need to polyfill.
+    function init() {
+       var needsPoly = featureDetect();
+       if(!needsPoly) {
+           polyScrollWidth.needsPoly = false;
+           return polyScrollWidth;
+       } else {
+           polyScrollWidth.needsPoly = true;
+       }
+       
+       // Create new polyfill for scrollWidth since we need to polyfill it
+       Object.defineProperty(Element.prototype, "scrollWidth", { get: getScrollWidth });
+    }
+    
+    // Feature Detect
+    // ---------------------------------------------
+    // Unfortunately we're making this polyfill for interop reasons, so we
+    // need to do a quick test to ensure that it is implemented correctly.
+    // Because of this we will create two ghost elements and then match them
+    // to see if they return reasonable results for scrollWidth
+    function featureDetect() {
+       var needsPoly = false;
+       var overrideStyles = [
+             {
+                   "name":"fontFamily",
+                   "value":"Verdana"
+             },
+             {
+                   "name":"float",
+                   "value":"left"
+             },
+             {
+                   "name":"fontWeight",
+                   "value":"normal"
+             },
+             {
+                   "name":"fontSize",
+                   "value":"10px"
+             },
+             {
+                   "name":"paddingLeft",
+                   "value":"2px"
+             },
+             {
+                   "name":"paddingRight",
+                   "value":"2px"
+             },
+             {
+                   "name":"fontStyle",
+                   "value":"normal"
+             },
+             {
+                   "name":"fontKerning",
+                   "value":"normal"
+             },
+             {
+                   "name":"fontSizeAdjust",
+                   "value":"none"
+             },
+             {
+                   "name":"fontStretch",
+                   "value":"normal"
+             },
+             {
+                   "name":"backgroundColor",
+                   "value":"green"
+             },
+             {
+                   "name":"position",
+                   "value":"absolute"
+             },
+             {
+                  "name":"visibility",
+                  "value":"hidden"
+             },
+             {
+                 "name":"width",
+                 "value":"auto"
+             }
+       ];
+       
+       var ghostMeasureDiv = createGhostElement("div", null, overrideStyles, "Test", true);
+       overrideStyles.push({"name":"width", "value":"0px"});
+       var ghostMeasureInput = createGhostElement("input", null, overrideStyles, "Test", true);
+       
+       var high = ghostMeasureDiv.clientWidth + 2;
+       var low = ghostMeasureDiv.clientWidth - 2;             
+       
+       // Check within +/- 2 pixels for reasonable results of scrollWidth in comparison to clientWidth [both should include padding]
+       if(ghostMeasureInput.scrollWidth < low || ghostMeasureInput.scrollWidth > high) {
+             needsPoly = true;
+       }
+       
+       return needsPoly;
+    }
+    
+    // Create Ghost Element
+    // ---------------------------------------------
+    // This will create the ghost items and then return the measured results. It also
+    // deletes the node and removes the HTML after it's done.
+    // <param name="elType"" type="string">This is the type of element you want to create, for example a div</param>
+    // <param name="computedStyles" type="CSSStyleDeclaration">These are the computed styles of the element you're wanting your ghost element to match</param>
+    // <param name="overrideStyles" type="[{name, value}]">These are the styles you want to override on the new element (eg: [{"name":"visibility", "value":"hidden"}])</param>
+    // <param name="content" type="string">This is the content that you want to be included in the element for measurement</param>
+    // <param name="callScrollWidth" type="bool">Do you want to call scrollWidth, if you set this to true and the polyfill has been set you'll end up in a loop</param>
+    // <return name="ghostMeasure" type="{"scrollWidth", "clientWidth"}">These are the two widths that we care about and will pass these back to the methods that want to do something with them</param>
+    function createGhostElement(elType, computedStyles, /* [{ name, value }] */ overrideStyles,  content, callScrollWidth) {
+          var id, el, ghostMeasure;
+          elType = elType.toLowerCase();
+          
+          id = "swMeasure-" + Date.now();
+          el = document.createElement(elType);
+          el.id = id;         
+          
+          if(computedStyles !== null) {
+              var csKeys = Object.keys(computedStyles.__proto__);
+              csKeys.forEach(function(prop) {
+                  el.style[prop] = computedStyles[prop];
+              })
+          }
+          
+          overrideStyles.forEach(function(overrideStyle) {
+                el.style[overrideStyle.name] = overrideStyle.value;
+          });
+          
+          if(elType == "input" || elType == "textarea") {
+                el.value = content;
+          }
+          else {
+            el.textContent = content;
+          }
+          
+          document.getElementsByTagName('body')[0].appendChild(el);
+          
+          el = document.getElementById(id);
+          
+          ghostMeasure = {
+                "scrollWidth": (callScrollWidth) ? el.scrollWidth : 0,
+                "clientWidth": parseInt(el.clientWidth)
+          };
+          
+          el.outerHTML = "";
+          delete el;
+          
+          return ghostMeasure;
+    }
+
     // Get Scroll Width
     // --------------------------------------------------------
     // Will get all necessary information from the input to
     // completely polyfill el.scrollWidth
-    function getScrollWidth(el) {
-      var fontSize, padding, width, value, scrollWidth, expectedContentLength, fontFamily, fontWeight, node;
+    // <return type="int">The max of the element width or the clientWidth</return>
+    function getScrollWidth() {
+      var width = "auto";
+      var computedStyles = window.getComputedStyle(this, null);
       
-      scrollWidth = el.scrollWidth;
-      padding = getPadding(el);     
-      width = window.getComputedStyle(el, null).getPropertyValue("width");
-      width = parseInt(width);
-      node = el.nodeName;
+      // We only want to set the width of the container if it is a textarea since
+      // that will need accurate wrapping. For any other input we just want the
+      // length of the text as one long string so width should be ""
+      if(this.nodeName == "TEXTAREA") width = computedStyles.width;
+       
+      var overrideStyles = [
+        {
+            "name": "position",
+            "value": "absolute"
+        },
+        {
+           "name": "float",
+           "value": "left"
+        },
+        {
+           "name":"visibility",
+           "value":"hidden"
+        },
+        // We don't want the width set
+        {
+            "name":"width",
+            "value": width
+        }
+      ];     
       
-      if(scrollWidth != (padding+width)) return scrollWidth;
-          
-      fontSize = window.getComputedStyle(el, null).getPropertyValue("font-size");
-      fontFamily = window.getComputedStyle(el, null).getPropertyValue("font-family");
-      fontWeight = window.getComputedStyle(el, null).getPropertyValue("font-weight"); 
-      value = el.value;
+      var ghost = createGhostElement("div", computedStyles, overrideStyles, this.value, false);
       
-      expectedContentLength = createMeasurementDiv(value, fontSize, padding, fontFamily, fontWeight, width, node)
-      
-      polyScrollWidth.duration = new Date().getTime() - startTime;
-      
-      return Math.max(width, expectedContentLength); //scrollWidth returns the max of content or element width
-    }
-    
-    // Create Measurement Div
-    // --------------------------------------------------------
-    // Unfortunately we don't have any font metric api's so to know
-    // how wide the content would have been rendered we have to produce
-    // an invisible div, get it's width and then send that back.
-    function createMeasurementDiv(value, fontsize, padding, fontfamily, fontWeight, width, node) {
-          var div, id, contentMeasure;
-          
-          // Create new div so that we get accurate font measurement
-          id = "swMeasure-" + new Date().toJSON().slice(0,10);
-          div = document.createElement('div');
-          div.id = id;
-          div.style.position = "absolute";
-          div.style.float = "left";
-          //div.style.visibility = "hidden";
-          div.style.fontWeight = fontWeight;          
-          div.style.fontSize = fontsize;
-          div.style.fontFamily = fontfamily;
-          div.style.padding = padding/2;
-          if(node == "TEXTAREA") {
-                div.style.width = width + "px";
-          }
-          else {
-                div.style.whiteSpace = "nowrap";
-          }
-          div.textContent = value;
-          
-          document.getElementsByTagName('body')[0].appendChild(div);
-          
-          // Now get the width
-          div = document.getElementById(id);
-          contentMeasure = div.clientWidth;
-          
-          // Remove pointless div
-          div.outerHTML = "";
-          delete div;
-          
-          return contentMeasure;
-    }
-  
-    // Get Padding
-    // --------------------------------------------------------
-    // For some reason I wasn't getting my expected result from
-    // the padding computed style and find it works better by getting left and right
-    // and then combining the two back together.
-    function getPadding(el) {
-      var paddingLeft, paddingRight, padding;
-      
-      paddingLeft = window.getComputedStyle(el, null).getPropertyValue("padding-left");
-      paddingRight = window.getComputedStyle(el, null).getPropertyValue("padding-right");
-      paddingLeft = parseInt(paddingLeft);
-      paddingRight = parseInt(paddingRight);
-      padding = paddingLeft + paddingRight;
-      return padding;
+      return Math.max(parseInt(computedStyles.width), ghost.clientWidth); //scrollWidth returns the max of content or element width
     }
     
     return polyScrollWidth;

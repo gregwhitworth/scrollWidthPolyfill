@@ -1,6 +1,5 @@
 <!Doctype html>
 <head>
-	<script src="../../source/scrollWidth.js"></script>
 	<style>
 		textarea { width: 500px; }
 	</style>
@@ -11,11 +10,14 @@
 			
 			var input = document.querySelector("textarea");
 			var result = document.querySelector("span");
-			var sw = polyScrollWidth.getScrollWidth(input);
+			var sw = input.scrollWidth;
 			result.textContent = sw;
 			
 			var durationTime = new Date().getTime() - startTime;
 			duration.textContent = "Duration: " + durationTime + "ms";
+			
+			var usedPoly = document.getElementById("usedPoly");
+			usedPoly.textContent = "Polyfill used: " + polyScrollWidth.needsPoly;
 		});
 	</script>
 </head>
@@ -24,5 +26,7 @@
 	<textarea>This is some text that I have put into a textarea</textarea>
 	<p>Scroll width <span></span></p>
 	<p id="duration"></p>
+	<p id="usedPoly"></p>
+	<script src="../../source/scrollWidth.js"></script>
 </body>
 </html>

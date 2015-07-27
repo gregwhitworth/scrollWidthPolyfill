@@ -1,15 +1,24 @@
 <!Doctype html>
-<head>	
+<head>
 	<style>
-		input {width: 0; background-color: red;}
+		textarea { 
+			width: 500px; 
+			tab-size: 25;
+			-moz-tab-size: 25;
+			-o-tab-size: 25;
+			-webkit-tab-size: 25;
+			font-size: 25px;
+			font-weight: bold;
+			text-transform: uppercase;
+		}
 	</style>
 	<script>
 		document.addEventListener('DOMContentLoaded',function(){
 			var startTime = new Date().getTime();
-			var duration = document.getElementById("duration");			
+			var duration = document.getElementById("duration");
 			
-			var input = document.querySelector("input");
-			var result = document.querySelector("span");			
+			var input = document.querySelector("textarea");
+			var result = document.querySelector("span");
 			var sw = input.scrollWidth;
 			result.textContent = sw;
 			
@@ -22,8 +31,8 @@
 	</script>
 </head>
 <body>
-	<p>This one should reply with the width of the value of "text" which is anywhere from 19 - 23</p>
-	<input value="text" style="background-color: green;">
+	<p>IE/MS Edge doesn't currently support tab-size so this will result in the same size as simple-textarea-2 which is ok, but I wanted to ensure there were no Chrome/FF issues</p>
+	<textarea>	This is some text that I have put into a textarea</textarea>
 	<p>Scroll width <span></span></p>
 	<p id="duration"></p>
 	<p id="usedPoly"></p>

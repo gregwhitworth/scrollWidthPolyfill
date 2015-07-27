@@ -38,48 +38,16 @@ var polyScrollWidth = (function (document, window) {
        var needsPoly = false;
        var overrideStyles = [
              {
-                   "name":"fontFamily",
-                   "value":"Verdana"
-             },
-             {
                    "name":"float",
                    "value":"left"
              },
              {
-                   "name":"fontWeight",
-                   "value":"normal"
-             },
-             {
-                   "name":"fontSize",
-                   "value":"10px"
-             },
-             {
                    "name":"paddingLeft",
-                   "value":"2px"
+                   "value":"0px"
              },
              {
                    "name":"paddingRight",
-                   "value":"2px"
-             },
-             {
-                   "name":"fontStyle",
-                   "value":"normal"
-             },
-             {
-                   "name":"fontKerning",
-                   "value":"normal"
-             },
-             {
-                   "name":"fontSizeAdjust",
-                   "value":"none"
-             },
-             {
-                   "name":"fontStretch",
-                   "value":"normal"
-             },
-             {
-                   "name":"backgroundColor",
-                   "value":"green"
+                   "value":"0px"
              },
              {
                    "name":"position",
@@ -91,19 +59,14 @@ var polyScrollWidth = (function (document, window) {
              },
              {
                  "name":"width",
-                 "value":"auto"
+                 "value":"0px"
              }
        ];
        
-       var ghostMeasureDiv = createGhostElement("div", null, overrideStyles, "Test", true);
-       overrideStyles.push({"name":"width", "value":"0px"});
-       var ghostMeasureInput = createGhostElement("input", null, overrideStyles, "Test", true);
-       
-       var high = ghostMeasureDiv.clientWidth + 2;
-       var low = ghostMeasureDiv.clientWidth - 2;             
+       var ghostMeasureInput = createGhostElement("input", null, overrideStyles, "Test", true);   
        
        // Check within +/- 2 pixels for reasonable results of scrollWidth in comparison to clientWidth [both should include padding]
-       if(ghostMeasureInput.scrollWidth < low || ghostMeasureInput.scrollWidth > high) {
+       if(ghostMeasureInput.scrollWidth == 0) {
              needsPoly = true;
        }
        

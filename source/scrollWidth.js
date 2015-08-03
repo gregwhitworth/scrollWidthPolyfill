@@ -1,12 +1,15 @@
-// Scroll Width Polyfill version 1
+// Scroll Width Polyfill version 1.1
 // Github: https://github.com/gregwhitworth/scrollWidthPolyfill
 // License: MIT License (http://opensource.org/licenses/MIT)
 var polyScrollWidth = (function (document, window) {
        
     var polyScrollWidth = window.polyScrollWidth || {
         "needsPoly": false,
-        "version": 1
+        "usedPoly": false,
+        "version": 1.1
     };
+    
+    var origScrollWidth = Object.getOwnPropertyDescriptor(Element.prototype, 'scrollWidth').get;
     
     init();
     
@@ -25,7 +28,7 @@ var polyScrollWidth = (function (document, window) {
        }
        
        // Create new polyfill for scrollWidth since we need to polyfill it
-       Object.defineProperty(Element.prototype, "scrollWidth", { get: getScrollWidth });
+       Object.defineProperty(Element.prototype, "scrollWidth", { configurable: true, enumerable: true, get: getScrollWidth });
     }
     
     // Feature Detect
@@ -54,13 +57,21 @@ var polyScrollWidth = (function (document, window) {
                    "value":"absolute"
              },
              {
-                  "name":"visibility",
-                  "value":"hidden"
-             },
-             {
                  "name":"width",
                  "value":"0px"
-             }
+             },
+             {
+                 "name":"borderRightWidth",
+                 "value":"0px"
+             },
+             {
+                 "name":"borderLeftWidth",
+                 "value":"0px"
+             },
+             {
+                 "name":"visibility",
+                 "value":"hidden"
+             }      
        ];
        
        var ghostMeasureInput = createGhostElement("input", null, overrideStyles, "Test", true);   
@@ -89,13 +100,16 @@ var polyScrollWidth = (function (document, window) {
           
           id = "swMeasure-" + Date.now();
           el = document.createElement(elType);
-          el.id = id;         
+          el.id = id;   
+          
+          var initStyle = el.style;      
           
           if(computedStyles !== null) {
               var csKeys = Object.keys(computedStyles.__proto__);
               csKeys.forEach(function(prop) {
-                  el.style[prop] = computedStyles[prop];
+                  initStyle[prop] = computedStyles[prop];
               })
+              el.style = initStyle;
           }
           
           overrideStyles.forEach(function(overrideStyle) {
@@ -115,7 +129,7 @@ var polyScrollWidth = (function (document, window) {
           
           ghostMeasure = {
                 "scrollWidth": (callScrollWidth) ? el.scrollWidth : 0,
-                "clientWidth": parseInt(el.clientWidth)
+                "clientWidth": parseInt(el.clientWidth, 10)
           };
           
           el.outerHTML = "";
@@ -130,6 +144,9 @@ var polyScrollWidth = (function (document, window) {
     // completely polyfill el.scrollWidth
     // <return type="int">The max of the element width or the clientWidth</return>
     function getScrollWidth() {
+      if(this.nodeName != "INPUT" && this.nodeName != "TEXTAREA") return origScrollWidth.call(this);
+      
+      polyScrollWidth.usedPoly = true;
       var width = "auto";
       var computedStyles = window.getComputedStyle(this, null);
       
@@ -160,7 +177,7 @@ var polyScrollWidth = (function (document, window) {
       
       var ghost = createGhostElement("div", computedStyles, overrideStyles, this.value, false);
       
-      return Math.max(parseInt(computedStyles.width), ghost.clientWidth); //scrollWidth returns the max of content or element width
+      return Math.max(parseInt(computedStyles.width, 10), ghost.clientWidth); //scrollWidth returns the max of content or element width
     }
     
     return polyScrollWidth;

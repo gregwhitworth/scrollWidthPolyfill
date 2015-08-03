@@ -2,13 +2,13 @@ Overview
 ==================
 This was created purely for polyfilling scrollWidth() for inputs, no other types of elements. On most sites the perf hit (which is about an additional 6ms per input) should be fine and will hopefully apply pressure to the MS Edge team to fix this bug but allow you to utilize Lea Verou's [Stretchy Library](http://leaverou.github.io/stretchy/)
 
-#### Do not use this if you are using ScrollWidth for anything other than inputs
-
-Since I am making this only to polyfill `scrollWidth` for inputs, if you utilize scrollWidth for anything else, do not use this polyfill!
-
 Which Browsers Need This?
 ------------------
 Currently only IE and MS Edge need this polyfill, possibly Safari if padding isn't included (I haven't tested this). A bug has been opened against MS Edge to have this fixed.
+
+Changelist
+------------------
+*Version 1.1* This now has fallback to the previous scrollWidth so this is safe to use in conjuction with the regulare scrollWidth. Made a few perf improvements and made a change to take interop issues between IE11 and Edge.
 
 Usage
 ------------------
@@ -24,3 +24,9 @@ If you find any bugs in this please let me know by opening an issue. Additionall
 License
 ------------------
 This is released under the [MIT License](http://opensource.org/licenses/MIT)
+
+Acknowledgement
+------------------
+Thank you to the following people for their help
+* Lea Verou
+* John-David Dalton

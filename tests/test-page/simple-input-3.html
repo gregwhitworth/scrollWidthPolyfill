@@ -14,7 +14,9 @@
 			duration.textContent = "Duration: " + durationTime + "ms";
 			
 			var usedPoly = document.getElementById("usedPoly");
-			usedPoly.textContent = "Polyfill used: " + polyScrollWidth.needsPoly;
+			usedPoly.textContent = "Polyfill used: " + polyScrollWidth.usedPoly;
+			var needsPoly = document.getElementById("needsPoly");
+			needsPoly.textContent = "Needs Polyfill: " + polyScrollWidth.needsPoly;
 		});
 	</script>
 </head>
@@ -23,6 +25,7 @@
 	<input value="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vestibulum massa sed nisi sagittis, vitae dignissim nulla aliquam. Vestibulum a facilisis ipsum. Quisque ultrices bibendum odio. Vivamus in vestibulum est. In blandit rutrum dolor. In laoreet tristique interdum. Vestibulum nec mi eget sapien molestie bibendum.liquam erat volutpat. Donec in justo ac sem cursus ullamcorper nec ac enim. Suspendisse luctus nibh eget purus dignissim venenatis. In ultrices varius porttitor. Cras pharetra sodales ipsum nec pulvinar. Mauris iaculis varius velit id dapibus. Sed sagittis placerat justo, quis consectetur turpis semper quis. In quis suscipit tortor.Curabitur tristique lectus non libero ultrices faucibus. Ut rhoncus euismod bibendum. Cras lobortis, orci vitae luctus commodo, risus magna placerat nulla, ac commodo ligula sapien et lorem. Pellentesque facilisis rhoncus nibh, ac interdum odio molestie maximus. Nulla dignissim quam eu sagittis cursus. Aliquam at ipsum non est condimentum molestie id a lorem. Praesent laoreet, erat vel faucibus rhoncus, nisl ligula sollicitudin neque, tincidunt dictum lacus massa non ex. Morbi convallis mi eu sem fermentum, eu porta mi pulvinar.enean sodales sollicitudin nulla eu pulvinar. In sit amet congue ante. Proin tempor orci sit amet purus maximus varius. Cras imperdiet nisl cursus diam euismod, in tincidunt eros imperdiet. Pellentesque quis mauris sed felis semper tempor quis vel tortor. Pellentesque sagittis lacinia viverra. Curabitur vestibulum finibus dictum. Cras semper mauris eget sapien euismod, nec ullamcorper quam mollis. Vestibulum ornare sollicitudin urna, vitae auctor felis condimentum et. Etiam vel ipsum purus. Duis varius luctus lacus. Donec tincidunt orci eget quam vestibulum molestie.Donec vehicula facilisis cursus. Proin efficitur odio id bibendum ornare. Integer faucibus, felis at laoreet auctor, leo metus cursus orci, dignissim vulputate augue tellus eget felis. Integer feugiat orci at erat volutpat congue. Sed pretium accumsan urna quis eleifend. Aliquam sit amet pellentesque eros, at porta tellus. Etiam molestie lacinia lobortis. Sed at mattis nibh. Morbi sit amet nunc ac lorem blandit faucibus. Morbi luctus leo tortor, vitae commodo justo tincidunt in. Suspendisse sagittis rutrum massa et condimentum. Cras dictum imperdiet semper. Proin suscipit purus sit amet ligula pharetra, vitae consequat risus posuere. Interdum et malesuada fames ac ante ipsum primis in faucibus. In interdum ipsum nec leo tincidunt dignissim.">
 	<p>Scroll width <span></span></p>
 	<p id="duration"></p>
+	<p id="needsPoly"></p>
 	<p id="usedPoly"></p>
 	<script src="../../source/scrollWidth.js"></script>
 </body>

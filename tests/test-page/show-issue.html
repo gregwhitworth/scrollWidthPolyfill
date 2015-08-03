@@ -1,0 +1,20 @@
+<!Doctype html>
+<head>	
+	<style>
+		input {width: 0; background-color: red;}
+	</style>
+	<script>
+		document.addEventListener('DOMContentLoaded',function(){
+			var input = document.querySelector("input");
+			var result = document.querySelector("span");			
+			var sw = input.scrollWidth;
+			result.textContent = sw;
+		});
+	</script>
+</head>
+<body>
+	<p>This test shows the reason we need the polyfill. The spec for scrollWidth says that it should be the max of either the elements padding+content box or the content itself. The input below is set to a width of 0, and has a default value of text which is larger than that of the content+padding box.</p>
+	<input value="text" style="background-color: green;">
+	<p>Scroll width <span></span></p>
+</body>
+</html>

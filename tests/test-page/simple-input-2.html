@@ -17,7 +17,9 @@
 			duration.textContent = "Duration: " + durationTime + "ms";
 			
 			var usedPoly = document.getElementById("usedPoly");
-			usedPoly.textContent = "Polyfill used: " + polyScrollWidth.needsPoly;
+			usedPoly.textContent = "Polyfill used: " + polyScrollWidth.usedPoly;
+			var needsPoly = document.getElementById("needsPoly");
+			needsPoly.textContent = "Needs Polyfill: " + polyScrollWidth.needsPoly;
 		});
 	</script>
 </head>
@@ -26,6 +28,7 @@
 	<input value="text">
 	<p>Scroll width <span></span></p>
 	<p id="duration"></p>
+	<p id="needsPoly"></p>
 	<p id="usedPoly"></p>
 	<script src="../../source/scrollWidth.js"></script>
 </body>

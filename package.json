@@ -1,0 +1,31 @@
+{
+  "name": "scroll-width-polyfill",
+  "version": "1.0.0",
+  "description": "This polyfill provides an interoperable support for the scrollWidth API.",
+  "main": "scrollWidth.min.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gregwhitworth/scrollWidthPolyfill.git"
+  },
+  "keywords": [
+    "polyfill",
+    "css",
+    "scrollWidth"
+  ],
+  "author": "Greg Whitworth",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gregwhitworth/scrollWidthPolyfill/issues"
+  },
+  "homepage": "https://github.com/gregwhitworth/scrollWidthPolyfill#readme",
+  "devDependencies": {
+    "grunt": "^1.0.2",
+    "grunt-contrib-uglify": "^3.3.0"
+  }
+}

@@ -2,17 +2,17 @@
 // Github: https://github.com/gregwhitworth/scrollWidthPolyfill
 // License: MIT License (http://opensource.org/licenses/MIT)
 var polyScrollWidth = (function (document, window) {
-       
+
     var polyScrollWidth = window.polyScrollWidth || {
         "needsPoly": false,
         "usedPoly": false,
         "version": 1.1
     };
-    
+
     var origScrollWidth = Object.getOwnPropertyDescriptor(Element.prototype, 'scrollWidth').get;
-    
+
     init();
-    
+
     // Init
     // ---------------------------------------------
     // This initializes the polyfill and checks to see
@@ -26,11 +26,11 @@ var polyScrollWidth = (function (document, window) {
        } else {
            polyScrollWidth.needsPoly = true;
        }
-       
+
        // Create new polyfill for scrollWidth since we need to polyfill it
        Object.defineProperty(Element.prototype, "scrollWidth", { configurable: true, enumerable: true, get: getScrollWidth });
     }
-    
+
     // Feature Detect
     // ---------------------------------------------
     // Unfortunately we're making this polyfill for interop reasons, so we
@@ -71,19 +71,19 @@ var polyScrollWidth = (function (document, window) {
              {
                  "name":"visibility",
                  "value":"hidden"
-             }      
+             }
        ];
-       
-       var ghostMeasureInput = createGhostElement("input", null, overrideStyles, "Test", true);   
-       
+
+       var ghostMeasureInput = createGhostElement("input", null, overrideStyles, "Test", true);
+
        // Check within +/- 2 pixels for reasonable results of scrollWidth in comparison to clientWidth [both should include padding]
        if(ghostMeasureInput.scrollWidth == 0) {
              needsPoly = true;
        }
-       
+
        return needsPoly;
     }
-    
+
     // Create Ghost Element
     // ---------------------------------------------
     // This will create the ghost items and then return the measured results. It also
@@ -97,13 +97,13 @@ var polyScrollWidth = (function (document, window) {
     function createGhostElement(elType, computedStyles, /* [{ name, value }] */ overrideStyles,  content, callScrollWidth) {
           var id, el, ghostMeasure;
           elType = elType.toLowerCase();
-          
+
           id = "swMeasure-" + Date.now();
           el = document.createElement(elType);
-          el.id = id;   
-          
-          var initStyle = el.style;      
-          
+          el.id = id;
+
+          var initStyle = el.style;
+
           if(computedStyles !== null) {
               var csKeys = Object.keys(computedStyles.__proto__);
               csKeys.forEach(function(prop) {
@@ -111,30 +111,30 @@ var polyScrollWidth = (function (document, window) {
               })
               el.style = initStyle;
           }
-          
+
           overrideStyles.forEach(function(overrideStyle) {
                 el.style[overrideStyle.name] = overrideStyle.value;
           });
-          
+
           if(elType == "input" || elType == "textarea") {
                 el.value = content;
           }
           else {
             el.textContent = content;
           }
-          
+
           document.getElementsByTagName('body')[0].appendChild(el);
-          
+
           el = document.getElementById(id);
-          
+
           ghostMeasure = {
                 "scrollWidth": (callScrollWidth) ? el.scrollWidth : 0,
                 "clientWidth": parseInt(el.clientWidth, 10)
           };
-          
+
           el.outerHTML = "";
           delete el;
-          
+
           return ghostMeasure;
     }
 
@@ -145,16 +145,16 @@ var polyScrollWidth = (function (document, window) {
     // <return type="int">The max of the element width or the clientWidth</return>
     function getScrollWidth() {
       if(this.nodeName != "INPUT" && this.nodeName != "TEXTAREA") return origScrollWidth.call(this);
-      
+
       polyScrollWidth.usedPoly = true;
       var width = "auto";
       var computedStyles = window.getComputedStyle(this, null);
-      
+
       // We only want to set the width of the container if it is a textarea since
       // that will need accurate wrapping. For any other input we just want the
       // length of the text as one long string so width should be ""
       if(this.nodeName == "TEXTAREA") width = computedStyles.width;
-       
+
       var overrideStyles = [
         {
             "name": "position",
@@ -173,12 +173,12 @@ var polyScrollWidth = (function (document, window) {
             "name":"width",
             "value": width
         }
-      ];     
-      
+      ];
+
       var ghost = createGhostElement("div", computedStyles, overrideStyles, this.value, false);
-      
-      return Math.max(parseInt(computedStyles.width, 10), ghost.clientWidth); //scrollWidth returns the max of content or element width
+
+      return Math.max(parseInt(computedStyles.width), ghost.clientWidth); //scrollWidth returns the max of content or element width
     }
-    
+
     return polyScrollWidth;
 })(document, window);

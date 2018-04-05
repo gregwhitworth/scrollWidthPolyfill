@@ -8,7 +8,8 @@ Currently only IE and MS Edge need this polyfill, possibly Safari if padding isn
 
 Changelist
 ------------------
-*Version 1.1* This now has fallback to the previous scrollWidth so this is safe to use in conjuction with the regulare scrollWidth. Made a few perf improvements and made a change to take interop issues between IE11 and Edge.
+* Tested it in the Latest EdgeHTML 17 build to verify that it still works, added grunt minifier since my earlier version (I can't recall what I was using) actually broke the minified version.
+* This now has fallback to the previous scrollWidth so this is safe to use in conjuction with the regular scrollWidth. Made a few perf improvements and made a change to take interop issues between IE11 and Edge.
 
 Usage
 ------------------
@@ -16,7 +17,7 @@ It's pretty straight forward, just include the JS file on your site near `</body
 
     var el = document.getElementById("testInput");
     var scrollWidth = el.scrollWidth // element == the element you want the scroll width of
-	
+
 Please submit bugs
 ------------------
 If you find any bugs in this please let me know by opening an issue. Additionally I currently only have tests for `<textarea>` and `<input type="text">`. If there is desire for more I will add them depending on complexity.

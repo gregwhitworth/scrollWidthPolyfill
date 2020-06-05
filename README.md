@@ -16,7 +16,7 @@ Usage
 It's pretty straight forward, just include the JS file on your site near `</body>` then call:
 
     var el = document.getElementById("testInput");
-    var scrollWidth = el.scrollWidth // element == the element you want the scroll width of
+    var scrollWidth = el.scrollWidth // el == the element you want the scroll width of
 
 Please submit bugs
 ------------------
